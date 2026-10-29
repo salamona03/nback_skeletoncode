@@ -1,12 +1,12 @@
-//
-// Created by Jitse van Esch on 2023-08-21.
-//
-
 #ifndef nback_h
 #define nback_h
-// createNBackString takes an integer array of size, input variables are the array, its size,
-// number of diffrent combinatations as a integer, procentesith so 20 equals 20% match
-// nback is number of steps between matches.
+
+#define CONTENT_MAX_SIZE 100
+
+struct nback_type {
+    int content[CONTENT_MAX_SIZE];
+    int size;
+};
 
 typedef struct nback_type *Nback;
 

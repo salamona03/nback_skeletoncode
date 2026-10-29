@@ -4,14 +4,7 @@
 #include <jni.h>
 #include "nback.h"
 
-#define CONTENT_MAX_SIZE 100
-
-struct nback_type {
-    int content[CONTENT_MAX_SIZE];
-    int size;
-};
-
-// Function to fill in a match (value and corresponding nBackString elements
+// Function to fill in a match (value and corresponding nBackString elements)
 void fillInAMatch(int nBackString[], int size, int combinations, int nback);
 
 // Function to fill in all empty elements into nBackString
@@ -30,12 +23,21 @@ void createNBackString(int nBackString[], int size, int combinations, int matchP
 Nback create(int size, int combinations, int matchPercentage, int nback){
     // Generate the array to save positions to
     Nback s = malloc(sizeof(struct nback_type));
+    if (s == NULL) {
+        return NULL;
+    }
+    if (size > CONTENT_MAX_SIZE) {
+        size = CONTENT_MAX_SIZE;
+    }
     s->size = size;
     createNBackString(s->content, size, combinations, matchPercentage, nback);
     return s;
 }
 
 int getIndexOf(Nback s, int i){
+    if (s == NULL || i < 0 || i >= s->size) {
+        return -1;
+    }
     return s->content[i];
 }
 
@@ -45,21 +47,24 @@ void createNBackString(int nBackString[], int size, int combinations, int matchP
     srand((unsigned)time(NULL));
 
     // Initialize all elements in nBackString to 0
-    for(int i = 0; i<size; i++){
+    for(int i = 0; i < size; i++){
         nBackString[i] = 0;
+    }
+
+    if (combinations <= 0) {
+        combinations = 1;
     }
 
     // Calculate number of matches needed based on matchPercentage
     int matches = (int) size * matchPercentage / 100;
 
     // Fill in the specified number of matches into the nBackString
-    for(int i = 0; i<matches; i++){
+    for(int i = 0; i < matches; i++){
         fillInAMatch(nBackString, size, combinations, nback);
     }
 
     // Fill in the remaining empty elements in nBackString
     fillInAllEmpty(nBackString, size, combinations, nback);
-
 }
 
 // Function to fill in a match (value and corresponding nBackString elements)
@@ -68,17 +73,19 @@ void fillInAMatch(int nBackString[], int size, int combinations, int nback){
     int value = 1 + rand() % combinations;
 
     int test = 0;
-    // Continue trying to find a valid position until one is found
-    while(test == 0){
+    int maxAttempts = 1000;
+    // Continue trying to find a valid position until one is found or attempts exhausted
+    while(test == 0 && maxAttempts > 0){
+        maxAttempts--;
         // Generate a random position in the nBackString
         int possition = rand() % size;
 
         // Check if the current and n-back positions are within the bounds
         // and if both positions are currently empty
-        if((possition+nback < size) && nBackString[possition]== 0 && nBackString[possition+nback] == 0){
+        if((possition + nback < size) && nBackString[possition] == 0 && nBackString[possition + nback] == 0){
             // Fill in the match value for both positions
             nBackString[possition] = value;
-            nBackString[possition+nback] = value;
+            nBackString[possition + nback] = value;
             test = 1;  // Set the test flag to exit the loop
         }
     }
@@ -86,12 +93,14 @@ void fillInAMatch(int nBackString[], int size, int combinations, int nback){
 
 // Function to fill in all empty elements in nBackString
 void fillInAllEmpty(int nBackString[], int size, int combinations, int nback){
-    for(int i = 0; i< size; i++){
+    for(int i = 0; i < size; i++){
         // Check if the current element is empty
         if(nBackString[i] == 0){
             int test = 0;
+            int maxAttempts = 1000;
             int foo, bar;
-            while(test == 0){
+            while(test == 0 && maxAttempts > 0){
+                maxAttempts--;
                 // Generate a random value for the empty element
                 int value = 1 + rand() % combinations;
 
@@ -101,21 +110,21 @@ void fillInAllEmpty(int nBackString[], int size, int combinations, int nback){
 
                 // Check if the previous n-back element is different from
                 // the current value
-                if(i-nback > 0){
-                    if (nBackString[i-nback] != value){
+                if(i - nback >= 0){
+                    if (nBackString[i - nback] != value){
                         foo = 1;
                     }
-                }else{
+                } else {
                     foo = 1;
                 }
 
                 // Check if the next n-back element is different from the
                 // current value
-                if(i+nback < size){
-                    if(nBackString[i+nback] != value){
+                if(i + nback < size){
+                    if(nBackString[i + nback] != value){
                         bar = 1;
                     }
-                }else{
+                } else {
                     bar = 1;
                 }
 
@@ -127,7 +136,10 @@ void fillInAllEmpty(int nBackString[], int size, int combinations, int nback){
                     nBackString[i] = value;  // Fill in the value in the current empty element
                 }
             }
+            // Fallback if max attempts exceeded
+            if (test == 0) {
+                nBackString[i] = 1 + rand() % combinations;
+            }
         }
-
     }
 }
