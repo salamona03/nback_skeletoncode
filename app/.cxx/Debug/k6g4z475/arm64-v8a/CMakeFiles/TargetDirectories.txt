@@ -1,0 +1,3 @@
+C:/Users/salam/StudioProjects/nback_skeletoncode/app/.cxx/Debug/k6g4z475/arm64-v8a/CMakeFiles/JniBridge.dir
+C:/Users/salam/StudioProjects/nback_skeletoncode/app/.cxx/Debug/k6g4z475/arm64-v8a/CMakeFiles/edit_cache.dir
+C:/Users/salam/StudioProjects/nback_skeletoncode/app/.cxx/Debug/k6g4z475/arm64-v8a/CMakeFiles/rebuild_cache.dir

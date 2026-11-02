@@ -148,7 +148,7 @@ class GameVM(
         }
         viewModelScope.launch {
             userPreferencesRepository.gameType.collect { typeStr ->
-                val type = try { GameType.valueOf(typeStr) } catch (e: Exception) { GameType.Visual }
+                val type = try { GameType.valueOf(typeStr) } catch (_: Exception) { GameType.Visual }
                 _gameState.value = _gameState.value.copy(gameType = type)
             }
         }

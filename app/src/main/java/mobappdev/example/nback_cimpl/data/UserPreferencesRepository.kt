@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
-import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.longPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -84,13 +83,13 @@ class UserPreferencesRepository(
                 try {
                     val type = object : TypeToken<List<ScoreEntity>>() {}.type
                     gson.fromJson<List<ScoreEntity>>(json, type) ?: emptyList()
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     emptyList()
                 }
             }
         }
 
-    private suspend fun handleException(throwable: Throwable) {
+    private fun handleException(throwable: Throwable) {
         if (throwable is IOException) {
             Log.e(TAG, "Error reading preferences", throwable)
         } else {
@@ -138,7 +137,7 @@ class UserPreferencesRepository(
             } else {
                 try {
                     gson.fromJson<List<ScoreEntity>>(json, type)?.toMutableList() ?: mutableListOf()
-                } catch (e: Exception) {
+                } catch (_: Exception) {
                     mutableListOf()
                 }
             }

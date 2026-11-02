@@ -21,6 +21,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.EmojiEvents
+import androidx.compose.material.icons.filled.Help
 import androidx.compose.material.icons.filled.Leaderboard
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.Psychology
@@ -90,6 +91,12 @@ fun HomeScreen(
                 actions = {
                     IconButton(onClick = {
                         SoundHapticHelper.playTapFeedback(view)
+                        onNavigateToTutorial()
+                    }) {
+                        Icon(imageVector = Icons.Default.Help, contentDescription = "Tutorial")
+                    }
+                    IconButton(onClick = {
+                        SoundHapticHelper.playTapFeedback(view)
                         onNavigateToThemeSettings()
                     }) {
                         Icon(imageVector = Icons.Default.Palette, contentDescription = "Theme")
@@ -129,7 +136,6 @@ fun HomeScreen(
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    // Smaller High Score & Compact Mode Badge Cards
                     Row(
                         modifier = Modifier.fillMaxWidth(),
                         horizontalArrangement = Arrangement.spacedBy(12.dp),
