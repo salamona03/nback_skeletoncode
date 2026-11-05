@@ -6,7 +6,7 @@ import android.util.Log
 import java.util.Locale
 
 /**
- * Text-to-Speech helper class for speaking auditory N-Back stimuli.
+ * Helper class wrapping Android's TextToSpeech engine for auditory N-Back spoken letters.
  */
 class TextToSpeechHelper(
     context: Context,
@@ -34,16 +34,26 @@ class TextToSpeechHelper(
         }
     }
 
+    /**
+     * Speaks the given letter aloud.
+     * QUEUE_FLUSH interrupts previous audio to ensure immediate feedback.
+     */
     fun speak(letter: String) {
         if (isInitialized && letter.isNotBlank()) {
             tts?.speak(letter, TextToSpeech.QUEUE_FLUSH, null, "NBackSpeechId")
         }
     }
 
+    /**
+     * Instantly stops any active spoken audio (e.g., when leaving screen or pausing).
+     */
     fun stop() {
         tts?.stop()
     }
 
+    /**
+     * Stops audio and releases TTS resources when ViewModel is cleared.
+     */
     fun shutdown() {
         tts?.stop()
         tts?.shutdown()

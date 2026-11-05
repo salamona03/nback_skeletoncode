@@ -19,24 +19,28 @@ import mobappdev.example.nback_cimpl.ui.theme.NBack_CImplTheme
 import mobappdev.example.nback_cimpl.ui.viewmodels.GameVM
 
 /**
- * MainActivity host for the N-Back application navigation with dynamic theme and multi-tier display scaling (Normal, Large, XL).
+ * Main Activity host for the application.
+ * Manages global dynamic theme selection (Light, Dark, System) and display scaling (Normal, Large, XL).
  */
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
+            // Instantiate the ViewModel using custom factory to inject dependencies
             val gameViewModel: GameVM = viewModel(
                 factory = GameVM.Factory
             )
+            // Collect the game state reactively
             val gameState by gameViewModel.gameState.collectAsState()
 
+            // Determine effective theme based on user settings
             val darkTheme = when (gameState.darkTheme) {
                 "Light" -> false
                 "Dark" -> true
                 else -> isSystemInDarkTheme()
             }
 
-            // Dynamic font scale for Normal, Large, and XL Display Modes
+            // Calculate font scale multiplier based on display scaling settings
             val fontScale = when (gameState.displayScale) {
                 "XL" -> 1.4f
                 "Large" -> 1.2f
@@ -44,6 +48,7 @@ class MainActivity : ComponentActivity() {
             }
 
             NBack_CImplTheme(darkTheme = darkTheme) {
+                // Apply global font scaling via CompositionLocalProvider
                 CompositionLocalProvider(
                     LocalDensity provides Density(
                         density = LocalDensity.current.density,
@@ -54,6 +59,7 @@ class MainActivity : ComponentActivity() {
                         modifier = Modifier.fillMaxSize(),
                         color = MaterialTheme.colorScheme.background
                     ) {
+                        // Host screen navigation
                         AppNavigation(vm = gameViewModel)
                     }
                 }

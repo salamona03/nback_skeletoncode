@@ -1,13 +1,16 @@
 package mobappdev.example.nback_cimpl.domain
 
 /**
- * Domain class responsible for N-Back scoring logic and input validation.
+ * Domain class responsible for N-Back scoring calculations, validation guards, and match evaluation.
  */
 class ScoringEngine {
 
     /**
-     * Checks if a match press is allowed for the given event index and N-back level.
-     * Matches are ignored before round starts, after it ends, and during the first n events.
+     * Checks if a match press attempt is valid based on game state.
+     * Enforces guards:
+     * - Disallowed if the game is not running (before start or after finish).
+     * - Disallowed if out of event bounds.
+     * - Disallowed during the first n events (indices < nBack).
      */
     fun isPressAllowed(
         currentIndex: Int,
@@ -22,8 +25,8 @@ class ScoringEngine {
     }
 
     /**
-     * Calculates score from hits and false alarms.
-     * Formula: (Hits * 10) - (False Alarms * 5), clamped at 0.
+     * Calculates the game score based on correct hits and false alarm errors.
+     * Formula: (Hits * 10) - (False Alarms * 5), clamped at a minimum floor of 0.
      */
     fun calculateScore(hits: Int, falseAlarms: Int): Int {
         val score = (hits * 10) - (falseAlarms * 5)
@@ -31,8 +34,8 @@ class ScoringEngine {
     }
 
     /**
-     * Evaluates a visual match attempt.
-     * Returns true if it was a true match (Hit), false if it was a False Alarm.
+     * Evaluates whether a visual match tap was a true match (Hit) or error (False Alarm).
+     * Returns true if sequence[currentIndex] == sequence[currentIndex - nBack].
      */
     fun evaluateVisualPress(
         sequence: IntArray,
@@ -44,8 +47,8 @@ class ScoringEngine {
     }
 
     /**
-     * Evaluates an auditory match attempt.
-     * Returns true if it was a true match (Hit), false if it was a False Alarm.
+     * Evaluates whether an auditory match tap was a true match (Hit) or error (False Alarm).
+     * Returns true if sequence[currentIndex] == sequence[currentIndex - nBack].
      */
     fun evaluateAudioPress(
         sequence: Array<String>,
